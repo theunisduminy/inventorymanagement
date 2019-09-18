@@ -25,7 +25,7 @@ add_action( 'after_setup_theme', 'avada_lang_setup' );
 // Insert stock take result of raw material and Products
 add_action('save_post', 'stockTakeResult');
 function stockTakeResult($post_id) {
-
+  // Add comment
   // Safety stock
   $lowStockParameters = array(
     'milk'            =>'101',
