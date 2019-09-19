@@ -18,7 +18,7 @@ function avada_lang_setup()
 }
 add_action('after_setup_theme', 'avada_lang_setup');
 
-
+include 'functions-tables.php';
 
 // 1 & 2) NB
 // Display raw material and product information
