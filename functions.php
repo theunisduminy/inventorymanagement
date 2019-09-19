@@ -22,6 +22,8 @@ add_action('after_setup_theme', 'avada_lang_setup');
 
 // 1 & 2) NB
 // Display raw material and product information
+// Product Information
+// Done in Snippets
 
 // 3)
 // Insert stock take result of raw material and Products
