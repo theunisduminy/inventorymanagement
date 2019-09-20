@@ -18,12 +18,18 @@ function avada_lang_setup()
 }
 add_action('after_setup_theme', 'avada_lang_setup');
 
-include 'functions-tables.php';
+//****************************************************************
+  // Title: Inventory Management skripsie events code
+  // Author: Theunis Duminy
+  // SU Number: 18969399
+  // 2019 - B.Eng (Industrial) - Final Year
+//****************************************************************
 
-// 1 & 2) NB
+
+// 1 & 2)
 // Display raw material and product information
 // Product Information
-// Done in Snippets
+include 'functions-tables.php';
 
 // 3)
 // Insert stock take result of raw material and Products
@@ -195,3 +201,24 @@ function mailManufacturingOrder($post_id)
 
 
 // webeng_notify_slack($message, 'testing');
+
+
+// JS shit
+function my_admin_enqueue_scripts()
+{
+  wp_enqueue_script( 'disableJS', get_template_directory_uri() . '/js/disable.js', array('jQuery'), '1.0.0', true );
+}
+add_action('acf/input/admin_enqueue_scripts', 'my_admin_enqueue_scripts');
+
+
+// JS shit also
+add_action('wp_enqueue_scripts', function($atts) {
+
+  ?>
+  <script>
+  jQuery(document).ready(function() {
+  jQuery('#disable').prop("disabled", true );
+   });
+  </script>
+  <?php
+});
