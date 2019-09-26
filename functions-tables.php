@@ -346,6 +346,89 @@ add_shortcode('products_return_table', function ($atts) {
   }
 );
 
+// Raw Material losses table
+add_shortcode('rm_losses_table', function ($atts) {
+
+    $query = new WP_Query(array(
+    'post_type' 		    => 'raw_material',
+    'posts_per_page' 	  => -1,
+    'order' 			      => 'ASC',
+    'orderby' 			    => 'name',
+  ));
+
+  if ($query->have_posts()) {
+    $raw_materials = [];
+
+  $counter = 0;
+  while ($query->have_posts()) : $query->the_post();
+
+    $raw_materials[get_the_ID()] = [];
+    $raw_material_losses = [];
+    $stocktakes = get_stocktakes();
+
+    foreach ($stocktakes as $key => $stocktake) {
+      $rawMaterialStockTakeRows = get_field('raw_material_stock_take', $stocktake->ID);
+      if ($rawMaterialStockTakeRows) {
+          foreach ($rawMaterialStockTakeRows as $raw_material) {
+              if (get_the_ID() == $raw_material['raw_material_stock']){
+                $raw_material_losses[$stocktake->ID] = $raw_material['shrinkage_loss'];
+              }
+          }
+      }
+    }
+    $raw_materials[get_the_ID()] = $raw_material_losses;
+    $raw_material_losses = null;
+    $counter++;
+    endwhile;
+  wp_reset_postdata();
+  ?>
+  <table class="display nowrap" style="width:100%">
+  <thead>
+    <tr>
+      <th style="text-align: left;">Product</th>
+      <?php foreach ($stocktakes as $key => $stocktake) {
+        echo '<th style="text-align: left;">'.$stocktake->post_title.'</th>';
+      } ?>
+      <th style="text-align: left;">TOTAL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($raw_materials as $product_key => $raw_material) {
+      ?>
+      <tr>
+        <td><?php echo get_the_title($product_key); ?></td>
+        <?php
+        foreach ($raw_material as $stocktake_key => $stocktake) {
+          ?><td class="product"><?php echo $stocktake ?></td><?php
+
+        }
+        ?>
+        <td class="total-product"></td>
+      </tr>
+      <?php
+    } ?>
+   </tbody>
+  </table>
+  <?php
+  return ob_get_clean();
+  }
+  }
+);
+
+
+function get_stocktakes(){
+  $query = new WP_Query(array(
+  'post_type' 		    => 'stock_take',
+  'posts_per_page' 	  => -1,
+  'order' 			      => 'ASC',
+  'orderby' 			    => 'name',
+));
+
+return $query->posts;
+}
+
+
+// JQuery data tables
 add_shortcode('datatables', function ($atts) {
 
     wp_register_script("wm-datatables", "https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js", array('jquery'), "1.10.19", true);
@@ -356,7 +439,11 @@ add_shortcode('datatables', function ($atts) {
     ?>
     <script>
     jQuery(document).ready(function() {
-    jQuery('table.display').DataTable();
+
+    jQuery('table.display').DataTable( {
+        "scrollX": true
+    } );
+
     });
 
     </script>
