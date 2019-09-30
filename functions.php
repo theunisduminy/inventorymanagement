@@ -32,17 +32,20 @@ add_action('after_setup_theme', 'avada_lang_setup');
 include 'functions-tables.php';
 
 // 3)
-// NB: Create table for shrinkage losses
 // Insert stock take result of raw material and Products
 add_action('save_post', 'stockTakeResult');
 function stockTakeResult($post_id)
 {
     // Safety stock
     $lowStockParameters = array(
-    'milk'            =>'101',
-    'sugar'           =>'102',
-    'cocoa-beans'     =>'103',
-    'chocolate-bar'   =>'100',
+    'milk'            =>'1000',
+    'sugar'           =>'1000',
+    'butter'          =>'1000',
+    'cocoa-beans'     =>'1000',
+    'coffee-beans'    =>'1000',
+    'chocolate-bar'   =>'20',
+    'chocolate-muffin'=>'20',
+    'coffee'          =>'10',
   );
 
     if (get_post_type($post_id) == 'stock_take') {
@@ -55,7 +58,7 @@ function stockTakeResult($post_id)
                 $rawMaterialType = $row['raw_material_stock'];
                 $RMquantity = $row['quantity'];
                 $rawMaterialProjectedQuantity = get_field('projected_quantity', $rawMaterialType);
-                $rmShrinkageLoss = $RMquantity - $rawMaterialProjectedQuantity;
+                $rmShrinkageLoss = $rawMaterialProjectedQuantity - $RMquantity;
 
                 $counter++;
 
@@ -81,7 +84,7 @@ function stockTakeResult($post_id)
                 $productType = $row['product_stock'];
                 $productQuantity = $row['quantity'];
                 $productProjectedQuantity = get_field('_stock', $productType);
-                $productShrinkageLoss = $productQuantity - $productProjectedQuantity;
+                $productShrinkageLoss =  $productProjectedQuantity - $productQuantity;
 
                 $otherCounter++;
 
@@ -226,10 +229,16 @@ add_action('wp_enqueue_scripts', 'my_admin_enqueue_scripts');
 
 // Change Login Title
 // Change title of login box
-add_filter('login_headertitle', 'ourLoginTitle');
-function ourLoginTitle()
-{
-    return 'Samll Enterprise Inventory Management';
+// CSS for login screen
+add_action('login_enqueue_scripts', 'ourLoginCSS');
+function ourLoginCSS() {
+	wp_enqueue_style('university_main_styles', get_stylesheet_uri(), NULL, microtime());
+}
+
+// Change title of login box
+add_filter( 'login_headertitle', 'ourLoginTitle' );
+function ourLoginTitle() {
+    return 'Inventory Management';
 }
 
 // Redirect user

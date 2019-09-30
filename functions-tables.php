@@ -21,7 +21,7 @@ add_shortcode('products_table', function ($atts) {
   	<th style="text-align: left;">Name</th>
   	<th style="text-align: left;">Price (R)</th>
     	<th style="text-align: left;">Stock</th>
-  	<th style="text-align: left;">Saftey Stock</th>
+  	<th style="text-align: left;">Safety Stock</th>
     </tr>
     </thead>
     <tbody>
@@ -65,8 +65,7 @@ add_shortcode('rm_table', function ($atts) {
     <tr>
   	<th style="text-align: left;">ID</th>
   	<th style="text-align: left;">Name</th>
-  	<th style="text-align: left;">Actual Quantity</th>
-    	<th style="text-align: left;">Projected Quantity</th>
+    <th style="text-align: left;">Projected Quantity</th>
   	<th style="text-align: left;">Measurement unit</th>
     </tr>
     </thead>
@@ -76,8 +75,7 @@ add_shortcode('rm_table', function ($atts) {
     <tr>
   	<td><?php echo get_the_ID(); ?></td>
   	<td><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></td>
-  	<td><?php the_field('actual_quantity'); ?></td>
-    	<td><?php the_field('projected_quantity'); ?></td>
+    <td><?php the_field('projected_quantity'); ?></td>
   	<td><?php the_field('measurement'); ?></td>
     </tr>
 
@@ -411,22 +409,106 @@ add_shortcode('rm_losses_table', function ($atts) {
   </table>
   <?php
   return ob_get_clean();
-  }
-  }
-);
+    }
+    }
+  );
 
 
-function get_stocktakes(){
-  $query = new WP_Query(array(
-  'post_type' 		    => 'stock_take',
-  'posts_per_page' 	  => -1,
-  'order' 			      => 'ASC',
-  'orderby' 			    => 'name',
-));
+  function get_stocktakes(){
+    $query = new WP_Query(array(
+    'post_type' 		    => 'stock_take',
+    'posts_per_page' 	  => -1,
+    'order' 			      => 'ASC',
+    'orderby' 			    => 'name',
+  ));
+
+  return $query->posts;
+}
+
+// Product losses table
+add_shortcode('products_losses_table', function ($atts) {
+
+    $query = new WP_Query(array(
+    'post_type' 		    => 'product',
+    'posts_per_page' 	  => -1,
+    'order' 			      => 'ASC',
+    'orderby' 			    => 'name',
+  ));
+
+  if ($query->have_posts()) {
+    $raw_materials = [];
+
+  $counter = 0;
+  while ($query->have_posts()) : $query->the_post();
+
+    $raw_materials[get_the_ID()] = [];
+
+    $raw_material_losses = [];
+    $stocktakes = get_stocktakes_products();
+
+    foreach ($stocktakes as $key => $stocktake) {
+      $rawMaterialStockTakeRows = get_field('product_stock_take', $stocktake->ID);
+      if ($rawMaterialStockTakeRows) {
+          foreach ($rawMaterialStockTakeRows as $raw_material) {
+              if (get_the_ID() == $raw_material['product_stock']->ID){
+                $raw_material_losses[$stocktake->ID] = $raw_material['shrinkage_loss'];
+
+              }
+          }
+      }
+    }
+
+    $raw_materials[get_the_ID()] = $raw_material_losses;
+    $raw_material_losses = null;
+    $counter++;
+    endwhile;
+  wp_reset_postdata();
+  ?>
+
+  <table class="display nowrap" style="width:100%">
+  <thead>
+    <tr>
+      <th style="text-align: left;">Product</th>
+      <?php foreach ($stocktakes as $key => $stocktake) {
+        echo '<th style="text-align: left;">'.$stocktake->post_title.'</th>';
+      } ?>
+      <th style="text-align: left;">TOTAL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($raw_materials as $product_key => $raw_material) {
+      ?>
+      <tr>
+        <td><?php echo get_the_title($product_key); ?></td>
+        <?php
+        foreach ($raw_material as $stocktake_key => $stocktake) {
+          ?><td class="product"><?php echo $stocktake ?></td><?php
+        }
+
+        ?>
+        <td class="total-product"></td>
+      </tr>
+      <?php
+    } ?>
+   </tbody>
+  </table>
+  <?php
+  return ob_get_clean();
+    }
+    }
+  );
+
+
+  function get_stocktakes_products(){
+    $query = new WP_Query(array(
+    'post_type' 		    => 'stock_take',
+    'posts_per_page' 	  => -1,
+    'order' 			      => 'ASC',
+    'orderby' 			    => 'name',
+  ));
 
 return $query->posts;
 }
-
 
 // JQuery data tables
 add_shortcode('datatables', function ($atts) {

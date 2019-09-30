@@ -7,7 +7,136 @@ Template: Avada
 Version: 1.0.0
 Text Domain:  Avada
 */
+
 div.dataTables_wrapper {
-        width: 1100px;
-        margin: 0 auto;
+  margin: 0 auto;
+  width: 1100px;
     }
+
+body.login .button-primary {
+  background-color: #F95738;
+  border-color: rgb(224, 84, 56);
+  text-shadow: 0 -1px 1px rgb(212, 82, 56),1px 0 1px rgb(212, 82, 56),0 1px 1px rgb(212, 82, 56),-1px 0 1px rgb(212, 82, 56);
+  box-shadow: 0 1px 0 rgb(199, 80, 56);
+}
+
+body.login .button-primary:hover,
+body.login .button-primary:active,
+body.login .button-primary:focus {
+  background-color: rgb(232, 85, 56);
+  border-color: rgb(212, 82, 56);
+  text-shadow: 0 -1px 1px rgb(199, 80, 56),1px 0 1px rgb(199, 80, 56),0 1px 1px rgb(199, 80, 56),-1px 0 1px rgb(199, 80, 56);
+  box-shadow: 0 1px 0 rgb(186, 78, 56);
+}
+
+body.login {
+  background-color: #FAF0CA;
+}
+
+.login h1 a {
+  color: #0D3B66;
+  font-size: 30px;
+  font-weight: 300;
+  background-image: none;
+  width: auto;
+  height: auto;
+  text-indent: 0;
+}
+
+.btn {
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #FFF;
+  font-size: 1.19rem;
+  padding: 12px 24px;
+  border: none;
+  outline: none;
+}
+
+.btn--small {
+  font-size: .88rem;
+  padding: 7px 13px;
+  font-weight: 300;
+}
+
+.btn--with-photo {
+  padding-left: 40px;
+  position: relative;
+}
+
+.btn--orange {
+  background-color: #EE964B;
+}
+
+.btn--orange:hover {
+  background: linear-gradient(#EE964B, rgb(235, 109, 0));
+}
+
+.btn--dark-orange {
+  background-color: #F95738;
+}
+
+.btn--dark-orange:hover {
+  background: linear-gradient(#F95738, rgb(204, 34, 0));
+}
+
+.btn--blue {
+  background-color: #0D3B66;
+}
+
+.btn--blue:hover {
+  background: linear-gradient(rgb(13, 80, 143), #0D3B66);
+}
+
+.btn--yellow {
+  background-color: #F4D35E;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .22);
+}
+
+.btn--yellow:hover {
+  background: linear-gradient(#F4D35E, rgb(240, 188, 0));
+}
+
+.btn--beige {
+  background-color: #FAF0CA;
+  color: #173f58;
+}
+
+.btn--beige:hover {
+  background-color: #F4D35E;
+}
+
+.btn--gray {
+  background-color: #222;
+}
+
+.btn--white {
+  background-color: #FFF;
+  color: #173f58;
+}
+
+.btn--white:hover {
+  background-color: #DDD;
+}
+
+.btn--large {
+  font-size: 1.3rem;
+  padding: 16px 34px;
+  border-radius: 7px;
+}
+
+@media (min-width: 530px) {
+
+  .btn--large {
+    font-size: 1.9rem;
+  }
+}
+
+.btn--inactive {
+  background-color: transparent;
+  cursor: default;
+  color: #333;
+}
