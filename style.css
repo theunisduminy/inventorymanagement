@@ -8,11 +8,6 @@ Version: 1.0.0
 Text Domain:  Avada
 */
 
-div.dataTables_wrapper {
-  margin: 0 auto;
-  width: 1100px;
-    }
-
 body.login .button-primary {
   background-color: #F95738;
   border-color: rgb(224, 84, 56);

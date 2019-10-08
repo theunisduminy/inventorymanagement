@@ -150,10 +150,10 @@ function returnProduct($post_id)
     if (get_post_type($post_id) == 'return_product') {
         $product_type = get_field('product', $post_id);
         $quantityReturned = get_field('quantity', $post_id);
-        $old_stock_value = get_field('_stock', $product_type->ID);
+        $old_stock_value = get_field('loss', $product_type->ID);
 
-        $stock_value = $old_stock_value - $quantityReturned;
-        update_post_meta($product_type->ID, '_stock', $stock_value);
+        $stock_value = $old_stock_value + $quantityReturned;
+        update_field('loss', $stock_value, $product_type->ID);
     }
 }
 
@@ -190,10 +190,10 @@ function returnRawMaterial($post_id)
     if (get_post_type($post_id) == 'return_raw_material') {
         $raw_material = get_field('raw_material', $post_id);
         $quantityReturned = get_field('quantity', $post_id);
-        $old_stock_value = get_field('projected_quantity', $raw_material->ID);
+        $old_stock_value = get_field('loss', $raw_material->ID);
 
-        $stock_value = $old_stock_value - $quantityReturned;
-        update_field('projected_quantity', $stock_value, $raw_material->ID);
+        $stock_value = $old_stock_value + $quantityReturned;
+        update_field('loss', $stock_value, $raw_material->ID);
     }
 }
 
