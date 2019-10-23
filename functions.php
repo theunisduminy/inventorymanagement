@@ -59,9 +59,11 @@ function stockTakeResult($post_id)
                 $RMquantity = $row['quantity'];
                 $rawMaterialProjectedQuantity = get_field('projected_quantity', $rawMaterialType);
                 $rmShrinkageLoss = $rawMaterialProjectedQuantity - $RMquantity;
-
+                $oldLossValue = get_field('loss', $rawMaterialType);
+                $lossValue = $oldLossValue + $rmShrinkageLoss;
                 $counter++;
 
+                update_field('loss', $lossValue, $rawMaterialType);
                 update_sub_field(array('raw_material_stock_take', $counter, 'shrinkage_loss'), $rmShrinkageLoss);
                 update_post_meta($rawMaterialType, 'projected_quantity', $RMquantity);
 
@@ -85,9 +87,12 @@ function stockTakeResult($post_id)
                 $productQuantity = $row['quantity'];
                 $productProjectedQuantity = get_field('_stock', $productType);
                 $productShrinkageLoss =  $productProjectedQuantity - $productQuantity;
+                $oldProductLossValue = get_field('loss', $productType->ID);
+                $productLossValue = $oldProductLossValue + $productShrinkageLoss;
 
                 $otherCounter++;
 
+                update_field('loss', $productLossValue, $productType->ID);
                 update_sub_field(array('product_stock_take', $otherCounter, 'shrinkage_loss'), $productShrinkageLoss);
                 update_post_meta($productType->ID, '_stock', $productQuantity);
 
@@ -192,8 +197,13 @@ function returnRawMaterial($post_id)
         $quantityReturned = get_field('quantity', $post_id);
         $old_stock_value = get_field('loss', $raw_material->ID);
 
+        // Update raw material stock
+        $rmCurrentStock = get_field('projected_quantity', $raw_material->ID);
+        $rmNewStock = $rmCurrentStock - $quantityReturned;
+
         $stock_value = $old_stock_value + $quantityReturned;
-        update_field('loss', $stock_value, $raw_material->ID);
+        // update_field('loss', $stock_value, $raw_material->ID);
+        update_field('projected_quantity', $rmNewStock, $raw_material->ID);
     }
 }
 
